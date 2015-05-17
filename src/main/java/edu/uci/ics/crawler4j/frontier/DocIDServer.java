@@ -41,8 +41,6 @@ public class DocIDServer extends Configurable {
   private final Database docIDsDB;
   private static final String DATABASE_NAME = "DocIDs";
 
-  private final Object mutex = new Object();
-
   private int lastDocID;
 
   public DocIDServer(Environment env, CrawlConfig config) {
@@ -69,7 +67,7 @@ public class DocIDServer extends Configurable {
    * @return the docid of the url if it is seen before. Otherwise -1 is returned.
    */
   public int getDocId(String url) {
-    synchronized (mutex) {
+    synchronized (url.intern()) {
       OperationStatus result = null;
       DatabaseEntry value = new DatabaseEntry();
       try {
@@ -90,7 +88,7 @@ public class DocIDServer extends Configurable {
   }
 
   public int getNewDocID(String url) {
-    synchronized (mutex) {
+    synchronized (url.intern()) {
       try {
         // Make sure that we have not already assigned a docid for this URL
         int docID = getDocId(url);
@@ -109,7 +107,7 @@ public class DocIDServer extends Configurable {
   }
 
   public void addUrlAndDocId(String url, int docId) throws Exception {
-    synchronized (mutex) {
+    synchronized (url.intern()) {
       if (docId <= lastDocID) {
         throw new Exception("Requested doc id: " + docId + " is not larger than: " + lastDocID);
       }
