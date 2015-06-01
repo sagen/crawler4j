@@ -27,6 +27,7 @@ import edu.uci.ics.crawler4j.crawler.exceptions.PageBiggerThanMaxSizeException;
 import edu.uci.ics.crawler4j.url.URLCanonicalizer;
 import edu.uci.ics.crawler4j.url.WebURL;
 import org.apache.http.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -227,7 +228,7 @@ public class PageFetcher extends Configurable {
         fetchTimes.put(domain, System.currentTimeMillis());
       }
 
-      HttpResponse response = httpClient.execute(request);
+      CloseableHttpResponse response = httpClient.execute(request);
       fetchResult.setEntity(response.getEntity());
       fetchResult.setResponseHeaders(response.getAllHeaders());
 
